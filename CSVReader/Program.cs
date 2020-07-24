@@ -1,12 +1,9 @@
 ﻿using CsvHelper;
 using CSVReader.models;
 using CSVReader.repositories;
-using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace CSVReader
 {
@@ -14,7 +11,7 @@ namespace CSVReader
     {
         static void Main(string[] args)
         {
-            string cn = @"data source=localhost\SQLEXPRESS; Database=Neighborhoods;integrated security = true";
+            string cn = @"data source=localhost\SQLEXPRESS; Database=ZipMarkets;integrated security = true";
             // Zips CSV reader
             /*using (var zipReader = new StreamReader("\\Users\\durrj\\Documents\\HPITracker\\AllZipCodes.csv"))
             using (var zipCsv = new CsvReader(zipReader, CultureInfo.InvariantCulture))
