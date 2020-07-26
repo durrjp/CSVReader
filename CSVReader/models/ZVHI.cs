@@ -9,9 +9,7 @@ namespace CSVReader.models
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public int Value { get; set; }
-        public int ZipCode { get; set; }
         public int ZipCodeId { get; set; }
         public Zip Zip { get; set; }
-
     }
 }

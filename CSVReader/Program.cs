@@ -3,6 +3,8 @@ using CSVReader.models;
 using CSVReader.repositories;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -51,13 +53,70 @@ namespace CSVReader
             using (var zvhiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\ZVHIRawEdited.csv"))
             using (var zvhiCsv = new CsvReader(zvhiReader, CultureInfo.InvariantCulture))
             {
-                
+                // Create a list of dates from the last 20 years using the last date supplied in csv document
+                string lastDate = "6/30/2020";
+                string[] lastDateArray = lastDate.Split('/');
+                HashSet<string> allDates = new HashSet<string>();
+                for (int i = 0; i < 20; i++)
+                {
+                    int year = Convert.ToInt32(lastDateArray[2]);
+                    int newYear = year - i;
+                    string newYearString = Convert.ToString(newYear);
+                    allDates.Add(lastDateArray[0] + "/" + lastDateArray[1] + "/" + newYearString);
+                }
+                DateTime lastDateTime = Convert.ToDateTime(lastDate);
+
+                // Get a list of dynamic records and convert dynamic class to list of Dictionaries
                 var zvhiRecords = zvhiCsv.GetRecords<dynamic>().ToList();
                 var json = JsonConvert.SerializeObject(zvhiRecords);
-                
+                var dictionaryList = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(json);
+                var newDictionary = new List<Dictionary<string, string>>();
 
-
+                // filter the new list of dictionaries by the list of allDates needed above
+                foreach (Dictionary<string, string> listItem in dictionaryList)
+                {
+                    var filter = listItem
+                        .Where(lI => lI.Key == "ZipCode" || allDates.Contains(lI.Key))
+                        .ToDictionary(lI => lI.Key, lI => lI.Value);
+                    newDictionary.Add(filter);
+                }
+                var importList = new List<ZVHI>();
                 AllZVHIsRepository allZVHIRepo = new AllZVHIsRepository(cn);
+                AllZipsRepository allZipRepo = new AllZipsRepository(cn);
+                var allZips = allZipRepo.GetAll();
+                // iterate through each dictionary in list of dictionaries
+                foreach (Dictionary<string, string> dictionary in newDictionary)
+                {
+                    // convert the ZipCode value from csv to an integer
+                    int dictionaryZip = Convert.ToInt32(dictionary["ZipCode"]);
+
+                    // see if any of current zips in database match zvhi entry in question
+                    if (allZips.Any(z => z.ZipCode == dictionaryZip))
+                    {
+                        var foundZip = allZips.FirstOrDefault(z => z.ZipCode == dictionaryZip);
+                        // if they do match, then iterate over all key value pairs in dictionary
+                        foreach(KeyValuePair<string, string> entry in dictionary)
+                        {
+                            if(entry.Key != "ZipCode")
+                            {
+                                try
+                                {
+                                    var newZVHI = new ZVHI()
+                                    {
+                                        ZipCodeId = foundZip.Id,
+                                        Date = Convert.ToDateTime(entry.Key),
+                                        Value = Convert.ToInt32(entry.Value)
+                                    };
+                                    allZVHIRepo.Insert(newZVHI);
+                                }
+                                catch
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
