@@ -50,7 +50,9 @@ namespace CSVReader
                 }
             }*/
 
-            using (var zvhiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\ZVHIRawEdited.csv"))
+            //ZVHI CSV Reader
+
+            /*using (var zvhiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\ZVHIRawEdited.csv"))
             using (var zvhiCsv = new CsvReader(zvhiReader, CultureInfo.InvariantCulture))
             {
                 // Create a list of dates from the last 20 years using the last date supplied in csv document
@@ -116,6 +118,19 @@ namespace CSVReader
                             }
                         }
                     }
+                }
+            }*/
+
+            // Sattes CSV Reader
+            using (var stateReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\StateCostofLivingIndexes.csv"))
+            using (var stateCsv = new CsvReader(stateReader, CultureInfo.InvariantCulture))
+            {
+                stateCsv.Configuration.RegisterClassMap<StateClassMap>();
+                var stateRecords = stateCsv.GetRecords<State>();
+                StatesRepository stateRepo = new StatesRepository(cn);
+                foreach (State state in stateRecords)
+                {
+                    stateRepo.Insert(state);
                 }
             }
         }
