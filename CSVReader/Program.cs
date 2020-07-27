@@ -17,7 +17,7 @@ namespace CSVReader
         {
             string cn = @"data source=localhost\SQLEXPRESS; Database=ZipMarkets;integrated security = true";
             // Zips CSV reader
-            /*using (var zipReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\AllZipCodes.csv"))
+            /*using (var zipReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\AllZipCodes.csv"))
             using (var zipCsv = new CsvReader(zipReader, CultureInfo.InvariantCulture))
             {
                 zipCsv.Configuration.RegisterClassMap<ZipClassMap>();
@@ -29,9 +29,21 @@ namespace CSVReader
                 }
             }*/
 
+            // Quick method of updating zipcode stateIds to match states tables
+            /*AllZipsRepository allZipRepo = new AllZipsRepository(cn);
+            StatesRepository stateRepo = new StatesRepository(cn);
+            var allZips = allZipRepo.GetAll();
+            var allStates = stateRepo.GetAll();
+            foreach(Zip zip in allZips)
+            {
+                var foundState = allStates.FirstOrDefault(s => s.StateAbbr == zip.State);
+                zip.StateId = foundState.Id;
+                allZipRepo.Update(zip);
+            }
+*/
 
             // HPI CSV reader
-            /*using (var hpiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\HPI5DigZipsRAW.csv"))
+            /*using (var hpiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\HPI5DigZipsRAW.csv"))
             using (var hpiCsv = new CsvReader(hpiReader, CultureInfo.InvariantCulture))
             {
                 hpiCsv.Configuration.RegisterClassMap<HPIClassMap>();
@@ -52,7 +64,7 @@ namespace CSVReader
 
             //ZVHI CSV Reader
 
-            /*using (var zvhiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\ZVHIRawEdited.csv"))
+            /*using (var zvhiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\ZVHIRawEdited.csv"))
             using (var zvhiCsv = new CsvReader(zvhiReader, CultureInfo.InvariantCulture))
             {
                 // Create a list of dates from the last 20 years using the last date supplied in csv document
@@ -121,8 +133,8 @@ namespace CSVReader
                 }
             }*/
 
-            // Sattes CSV Reader
-            using (var stateReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\StateCostofLivingIndexes.csv"))
+            // States CSV Reader
+            /*using (var stateReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\StateCostofLivingIndexes.csv"))
             using (var stateCsv = new CsvReader(stateReader, CultureInfo.InvariantCulture))
             {
                 stateCsv.Configuration.RegisterClassMap<StateClassMap>();
@@ -132,7 +144,7 @@ namespace CSVReader
                 {
                     stateRepo.Insert(state);
                 }
-            }
+            }*/
         }
     }
 }

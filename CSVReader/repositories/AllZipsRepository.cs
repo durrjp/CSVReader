@@ -68,5 +68,35 @@ namespace CSVReader.repositories
                 }
             }
         }
+        public void Update(Zip zip)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        UPDATE AllZips
+                            SET ZipCode = @zipcode, 
+                                State = @state, 
+                                StateId = @stateId, 
+                                City = @City, 
+                                County = @County,
+                                ForecastYoYPctChange = @ForecastYoYPctChange 
+                            WHERE Id = @id"
+                            ;
+                    cmd.Parameters.AddWithValue("@zipcode", zip.ZipCode);
+                    cmd.Parameters.AddWithValue("@state", zip.State);
+                    cmd.Parameters.AddWithValue("@stateId", zip.StateId);
+                    cmd.Parameters.AddWithValue("@City", zip.City);
+                    cmd.Parameters.AddWithValue("@County", zip.County);
+                    cmd.Parameters.AddWithValue("@ForecastYoYPctChange", zip.ForecastYoYPctChange);
+                    cmd.Parameters.AddWithValue("@id", zip.Id);
+
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

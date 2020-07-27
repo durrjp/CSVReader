@@ -35,5 +35,38 @@ namespace CSVReader.repositories
                 }
             }
         }
+
+        public List<State> GetAll()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT 
+	                                        Id, 
+	                                        StateAbbr
+                                        FROM States
+                                        ";
+
+                    List<State> states = new List<State>();
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        State state = new State()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            StateAbbr = reader.GetString(reader.GetOrdinal("StateAbbr")),
+                        };
+                        states.Add(state);
+                    }
+
+                    reader.Close();
+
+                    return states;
+                }
+            }
+        }
     }
 }
