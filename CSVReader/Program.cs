@@ -40,7 +40,34 @@ namespace CSVReader
                 zip.StateId = foundState.Id;
                 allZipRepo.Update(zip);
             }
-*/
+            */
+
+
+            //function to read zipcode lat and long and assign to current zip codes
+            /*using (var zipLLReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\USZipCodeLatLong.csv"))
+            using (var zipLLCsv = new CsvReader(zipLLReader, CultureInfo.InvariantCulture))
+            {
+                zipLLCsv.Configuration.RegisterClassMap<ZipLatLongMap>();
+                var zipLLRecords = zipLLCsv.GetRecords<ZipLatLong>().ToList();
+                AllZipsRepository allZipRepo = new AllZipsRepository(cn);
+                var allZips = allZipRepo.GetAll();
+                foreach(Zip zip in allZips)
+                {
+                    var foundLatLong = zipLLRecords.FirstOrDefault(ll => ll.Zip == zip.ZipCode);
+                    if (foundLatLong != null)
+                    {
+                        zip.Latitude = foundLatLong.Latitude;
+                        zip.Longitude = foundLatLong.Longitude;
+                        allZipRepo.Update(zip);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+            }*/
+
 
             // HPI CSV reader
             /*using (var hpiReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\HPI5DigZipsRAW.csv"))

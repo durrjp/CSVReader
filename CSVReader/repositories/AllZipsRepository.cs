@@ -38,7 +38,7 @@ namespace CSVReader.repositories
                     cmd.CommandText = @"SELECT 
 	                                        Id, 
 	                                        ZipCode, 
-	                                        State,
+	                                        StateId,
                                             City,
 	                                        County,
                                             ForecastYoYPctChange
@@ -54,7 +54,7 @@ namespace CSVReader.repositories
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             ZipCode = reader.GetInt32(reader.GetOrdinal("ZipCode")),
-                            State = reader.GetString(reader.GetOrdinal("State")),
+                            StateId = reader.GetInt32(reader.GetOrdinal("StateId")),
                             City = reader.GetString(reader.GetOrdinal("City")),
                             County = reader.GetString(reader.GetOrdinal("County")),
                             ForecastYoYPctChange = reader.GetDecimal(reader.GetOrdinal("ForecastYoYPctChange"))
@@ -78,19 +78,21 @@ namespace CSVReader.repositories
                     cmd.CommandText = @"
                         UPDATE AllZips
                             SET ZipCode = @zipcode, 
-                                State = @state, 
                                 StateId = @stateId, 
                                 City = @City, 
                                 County = @County,
-                                ForecastYoYPctChange = @ForecastYoYPctChange 
+                                ForecastYoYPctChange = @ForecastYoYPctChange,
+                                Latitude = @lat,
+                                Longitude = @long
                             WHERE Id = @id"
                             ;
                     cmd.Parameters.AddWithValue("@zipcode", zip.ZipCode);
-                    cmd.Parameters.AddWithValue("@state", zip.State);
                     cmd.Parameters.AddWithValue("@stateId", zip.StateId);
                     cmd.Parameters.AddWithValue("@City", zip.City);
                     cmd.Parameters.AddWithValue("@County", zip.County);
                     cmd.Parameters.AddWithValue("@ForecastYoYPctChange", zip.ForecastYoYPctChange);
+                    cmd.Parameters.AddWithValue("@lat", zip.Latitude);
+                    cmd.Parameters.AddWithValue("@long", zip.Longitude);
                     cmd.Parameters.AddWithValue("@id", zip.Id);
 
 

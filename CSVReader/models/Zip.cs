@@ -13,5 +13,7 @@ namespace CSVReader.models
         public string City { get; set; }
         public string County { get; set; }
         public Decimal ForecastYoYPctChange { get; set; }
+        public Decimal Latitude { get; set; }
+        public Decimal Longitude { get; set; }
     }
 }
