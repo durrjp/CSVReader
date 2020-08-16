@@ -174,6 +174,20 @@ namespace CSVReader
             }*/
 
             // Mortgage rates CSV Reader
+            using (var mrReader = new StreamReader("\\Users\\durrj\\Documents\\ZipMarkets\\CSV Files\\FixedMortgageRates.csv"))
+            using (var mrCSV = new CsvReader(mrReader, CultureInfo.InvariantCulture))
+            {
+                mrCSV.Configuration.PrepareHeaderForMatch = (string header, int index) => header.ToLower();
+                mrCSV.Configuration.RegisterClassMap<MortRateClassMap>();
+                var mrRecords = mrCSV.GetRecords<MortgageRate>();
+                MortgageRateRepository mrRepo = new MortgageRateRepository(cn);
+
+                foreach (MortgageRate mr in mrRecords)
+                {
+                    mrRepo.Insert(mr);
+                }
+            }
+
         }
     }
 }
